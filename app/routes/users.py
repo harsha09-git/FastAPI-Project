@@ -15,11 +15,12 @@ router = APIRouter(prefix="/users", tags=["Users"])
 @router.post("", response_model=UserResponse, status_code=201)
 def create_user(
     user_in: UserCreate,
-    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    require_permission("create_user")(current_user, db)
-
+    # Check permission after getting user
+    _ = require_permission("create_user")(current_user, db)
+    
     if db.query(User).filter(User.email == user_in.email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
 
@@ -38,21 +39,21 @@ def create_user(
 
 @router.get("", response_model=list[UserResponse])
 def list_users(
-    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    require_permission("read_users")(current_user, db)
+    _ = require_permission("read_users")(current_user, db)
     return db.query(User).all()
 
 
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(
     user_id: UUID,
-    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    require_permission("read_users")(current_user, db)
-
+    _ = require_permission("read_users")(current_user, db)
+    
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -63,11 +64,11 @@ def get_user(
 def update_user(
     user_id: UUID,
     user_in: UserUpdate,
-    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    require_permission("create_user")(current_user, db)
-
+    _ = require_permission("create_user")(current_user, db)
+    
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -83,11 +84,11 @@ def update_user(
 @router.delete("/{user_id}", status_code=204)
 def delete_user(
     user_id: UUID,
-    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    require_permission("delete_user")(current_user, db)
-
+    _ = require_permission("delete_user")(current_user, db)
+    
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

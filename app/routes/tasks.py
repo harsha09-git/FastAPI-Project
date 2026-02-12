@@ -14,10 +14,10 @@ router = APIRouter(prefix="/tasks", tags=["Tasks"])
 @router.post("", response_model=TaskResponse, status_code=201)
 def create_task(
     task_in: TaskCreate,
-    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    require_permission("create_task")(current_user, db)
+    _ = require_permission("create_task")(current_user, db)
 
     task = Task(
         title=task_in.title,
@@ -35,8 +35,8 @@ def create_task(
 
 @router.get("", response_model=list[TaskResponse])
 def list_tasks(
-    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     return db.query(Task).filter(Task.owner_id == current_user.id).all()
 
@@ -44,8 +44,8 @@ def list_tasks(
 @router.get("/{task_id}", response_model=TaskResponse)
 def get_task(
     task_id: UUID,
-    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     task = db.query(Task).filter(Task.id == task_id).first()
 
@@ -61,10 +61,10 @@ def get_task(
 def update_task(
     task_id: UUID,
     task_in: TaskUpdate,
-    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    require_permission("update_task")(current_user, db)
+    _ = require_permission("update_task")(current_user, db)
 
     task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
@@ -83,10 +83,10 @@ def update_task(
 @router.delete("/{task_id}", status_code=204)
 def delete_task(
     task_id: UUID,
-    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    require_permission("delete_task")(current_user, db)
+    _ = require_permission("delete_task")(current_user, db)
 
     task = db.query(Task).filter(Task.id == task_id).first()
     if not task:

@@ -10,10 +10,12 @@ pwd_context = CryptContext(
 )
 
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    # Truncate to 72 bytes for bcrypt compatibility
+    return pwd_context.hash(password[:72])
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    # Truncate to 72 bytes for bcrypt compatibility
+    return pwd_context.verify(plain_password[:72], hashed_password)
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
