@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Python
 __pycache__/
 *.pyc
@@ -17,3 +18,9 @@ venv/
 
 # OS
 .DS_Store
+=======
+venv/
+__pycache__/
+.env
+.vscode/
+>>>>>>> 04f4f79fe31c6792cb92f00ff0590b47f5650216
